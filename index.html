@@ -3,347 +3,443 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>사진 및 일정 기록소</title>
+    <title>디지털 명함</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --bg-color: #f4f6f9;
+            --bg-color: #f0fdf4;       
             --card-bg: #ffffff;
-            --primary-color: #2c3e50;
-            --accent-color: #3498db;
-            --danger-color: #e74c3c;
-            --text-color: #333333;
+            --primary-color: #16a34a;  
+            --primary-dark: #15803d;   
+            --text-main: #0f172a;
+            --text-sub: #475569;
+            --table-border: #bbf7d0;    
+            --available-bg: #dcfce7;   
+            --available-text: #166534; 
+            --box-bg: #f8fafc;          
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        h1 {
-            color: var(--primary-color);
-            margin-bottom: 30px;
-            font-weight: 700;
-        }
-
-        /* 입력 폼 스타일 */
-        .upload-form {
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        /* 명함 카드 스타일 */
+        .business-card {
+            background: var(--card-bg);
             width: 100%;
-            max-width: 500px;
-            margin-bottom: 40px;
-            box-sizing: border-box;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group.no-margin {
-            margin-bottom: 0;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .form-group input[type="file"],
-        .form-group input[type="date"],
-        .form-group textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-
-        .form-group textarea {
-            resize: none;
-            height: 90px;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--accent-color);
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 14px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .submit-btn:hover {
-            background-color: #1a252f;
-        }
-
-        /* 갤러리 리스트 스타일 */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
+            max-width: 390px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(22, 163, 74, 0.05);
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        
+        .card-cover {
+            height: 120px;
+            background: linear-gradient(135deg, #bbf7d0, #4ade80, #16a34a);
+        }
+
+        /* 프로필 섹션 */
+        .profile-section {
+            text-align: center;
+            padding: 0 24px 12px 24px;
+            position: relative;
+            margin-top: -60px;
+        }
+
+        .profile-img-label {
+            display: inline-block;
             position: relative;
             cursor: pointer;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 20px rgba(0,0,0,0.12);
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid var(--card-bg);
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.12);
+            background-color: #eee;
+            transition: opacity 0.2s;
         }
 
-        /* 카드 클릭 시 삭제용 오버레이 */
-        .card::after {
-            content: '🗑️ 클릭하여 삭제';
+        .profile-img-label:hover .profile-img {
+            opacity: 0.85;
+        }
+
+        /* 이미지 교체 안내 아이콘 뱃지 */
+        .file-badge {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(231, 76, 60, 0.9);
+            bottom: 5px;
+            right: 5px;
+            background-color: var(--primary-color);
             color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.85rem;
+            border: 3px solid var(--card-bg);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        #profile-upload {
+            display: none;
+        }
+
+        .company-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-sub);
+            margin-top: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .name-container {
+            margin-top: 8px;
+        }
+
+        .name-ko {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .name-en {
+            font-size: 0.95rem;
+            color: var(--text-sub);
+            margin-left: 6px;
+        }
+
+        .job-title {
+            font-size: 0.95rem;
+            color: var(--primary-color);
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* 연락처 저장 버튼 */
+        .save-btn-container {
+            padding: 0 24px;
+            margin-top: 8px;
+            margin-bottom: 16px;
+        }
+
+        .save-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            font-weight: bold;
-            opacity: 0;
-            transition: opacity 0.2s;
-            z-index: 2;
-        }
-
-        .card:hover::after {
-            opacity: 1;
-        }
-
-        .card-img-wrapper {
+            gap: 8px;
             width: 100%;
-            height: 200px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* 이미지 위 날짜 배지 표시 */
-        .card-date-badge {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: var(--primary-color);
             color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            z-index: 1;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15);
         }
 
-        .card-content {
-            padding: 15px;
+        .save-btn:active {
+            background-color: var(--primary-dark);
         }
 
-        .card-caption {
-            font-size: 14px;
-            color: #444;
-            line-height: 1.5;
-            margin: 0;
-            word-break: break-all;
-            white-space: pre-wrap; /* 줄바꿈 유지 */
+        /* 스터디 섹션 타이틀 */
+        .section-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+            padding: 12px 24px 8px 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .empty-message {
-            grid-column: 1 / -1;
+        /* 스터디 시간표 스타일 */
+        .timetable-container {
+            padding: 0 24px;
+            margin-bottom: 16px;
+        }
+
+        .timetable {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
             text-align: center;
-            color: #888;
-            font-style: italic;
-            margin-top: 30px;
-            font-size: 16px;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--table-border);
+        }
+
+        .timetable th {
+            background-color: rgba(22, 163, 74, 0.06);
+            color: var(--text-main);
+            font-weight: 500;
+            padding: 8px;
+            border-bottom: 1px solid var(--table-border);
+        }
+
+        .timetable td {
+            padding: 10px 6px;
+            border-bottom: 1px solid var(--table-border);
+            border-right: 1px solid var(--table-border);
+            color: var(--text-sub);
+        }
+
+        .timetable td:last-child {
+            border-right: none;
+        }
+
+        /* 스터디/모임 가능 시간 강조 */
+        .time-available {
+            background-color: var(--available-bg);
+            color: var(--available-text);
+            font-weight: 700;
+        }
+
+        /* 상세 연락처 및 링크 리스트 */
+        .contact-list {
+            padding: 0 24px 32px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            background-color: var(--box-bg);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+            border: 1px solid rgba(22, 163, 74, 0.03);
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .contact-item:active {
+            background-color: #f1f5f9;
+            transform: scale(0.98);
+        }
+
+        .contact-icon {
+            width: 36px;
+            height: 36px;
+            background-color: var(--available-bg);
+            color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1rem;
+            margin-right: 14px;
+            flex-shrink: 0;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .contact-label {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            margin-bottom: 2px;
+        }
+
+        .contact-value {
+            font-size: 0.95rem;
+            font-weight: 400;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
     </style>
 </head>
 <body>
 
-    <h1>📅 사진 & 일정 다이어리</h1>
+    <div class="business-card">
+        <div class="card-cover"></div>
 
-    <!-- 데이터 입력 구역 -->
-    <div class="upload-form">
-        <div class="form-row">
-            <div class="form-group no-margin">
-                <label for="imageInput">사진 업로드</label>
-                <input type="file" id="imageInput" accept="image/*">
+        <div class="profile-section">
+            <label for="profile-upload" class="profile-img-label">
+                <img id="profile-view" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400" alt="프로필 사진" class="profile-img">
+                <div class="file-badge"><i class="fa-solid fa-camera"></i></div>
+            </label>
+            <input type="file" id="profile-upload" accept="image/*">
+            
+            <div class="company-name">경남정보대학교</div>
+            
+            <div class="name-container">
+                <span class="name-ko">도연서</span>
+                <span class="name-en">YeonSeo Do</span>
             </div>
-            <div class="form-group no-margin">
-                <label for="dateInput">날짜 선택</label>
-                <input type="date" id="dateInput">
-            </div>
+            <div class="job-title">AI컴퓨터과 / 1학년</div>
         </div>
-        <div class="form-group">
-            <label for="captionInput">부연 설명</label>
-            <textarea id="captionInput" placeholder="이날의 추억이나 일정을 메모해 두세요..."></textarea>
+
+        <div class="save-btn-container">
+            <button class="save-btn" id="downloadVCF">
+                <i class="fa-solid fa-user-plus"></i> 연락처 휴대폰에 저장
+            </button>
         </div>
-        <button class="submit-btn" onclick="addSchedule()">추억 등록하기</button>
-    </div>
 
-    <hr style="width: 100%; max-width: 1200px; border: 0; height: 1px; background: #ddd; margin-bottom: 40px;">
+        <div class="section-title">
+            <i class="fa-regular fa-calendar-days" style="color: var(--primary-color);"></i>
+            스터디 및 팀플 가능 시간
+        </div>
+        <div class="timetable-container">
+            <table class="timetable">
+                <thead>
+                    <tr>
+                        <th>시간</th>
+                        <th>월</th>
+                        <th>화</th>
+                        <th>수</th>
+                        <th>목</th>
+                        <th>금</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>오전</td>
+                        <td>수업</td>
+                        <td>수업</td>
+                        <td>수업</td>
+                        <td>수업</td>
+                        <td>개인</td>
+                    </tr>
+                    <tr>
+                        <td>오후</td>
+                        <td class="time-available">가능</td>
+                        <td>수업</td>
+                        <td>수업</td>
+                        <td>수업</td>
+                        <td>개인</td>
+                    </tr>
+                    <tr>
+                        <td>저녁</td>
+                        <td class="time-available">가능</td>
+                        <td class="time-available">가능</td>
+                        <td>개인</td>
+                        <td class="time-available">가능</td>
+                        <td>개인</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-    <!-- 리스트 출력 구역 -->
-    <div class="gallery" id="gallery">
-        <div class="empty-message" id="emptyMessage">등록된 기록이 없습니다. 새로운 일정을 등록해 보세요!</div>
+        <div class="section-title">
+            <i class="fa-solid fa-address-book" style="color: var(--primary-color);"></i>
+            상세 연락처
+        </div>
+        <div class="contact-list">
+            <a href="tel:010-1234-5678" class="contact-item">
+                <div class="contact-icon"><i class="fa-solid fa-phone"></i></div>
+                <div class="contact-info">
+                    <span class="contact-label">전화번호</span>
+                    <span class="contact-value">010-****-***1</span>
+                </div>
+            </a>
+
+            <a href="mailto:gildong@example.com" class="contact-item">
+                <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div>
+                <div class="contact-info">
+                    <span class="contact-label">이메일</span>
+                    <span class="contact-value">ysys_0@naver.com</span>
+                </div>
+            </a>
+
+            <a href="https://map.naver.com/v5/search/부산 사상구 주례로 45" target="_blank" rel="noopener noreferrer" class="contact-item">
+                <div class="contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <div class="contact-info">
+                    <span class="contact-label">학교 주소</span>
+                    <span class="contact-value">부산 사상구 주례로 45</span>
+                </div>
+            </a>
+        </div>
     </div>
 
     <script>
-        // 일정 데이터를 관리할 배열
-        let scheduleList = [];
-
-        const imageInput = document.getElementById('imageInput');
-        const dateInput = document.getElementById('dateInput');
-        const captionInput = document.getElementById('captionInput');
-        const gallery = document.getElementById('gallery');
-        const emptyMessage = document.getElementById('emptyMessage');
-
-        // 페이지 로드 시 오늘 날짜를 기본값으로 지정
-        window.onload = function() {
-            const today = new Date().toISOString().split('T')[0];
-            dateInput.value = today;
-        };
-
-        // 데이터 등록 함수
-        function addSchedule() {
-            const file = imageInput.files[0];
-            const dateValue = dateInput.value;
-            const caption = captionInput.value.trim();
-
-            if (!file) {
-                alert('사진을 업로드해 주세요!');
-                return;
-            }
-            if (!dateValue) {
-                alert('날짜를 선택해 주세요!');
-                return;
-            }
-
-            // FileReader를 통해 이미지를 Base64 데이터 스트링으로 변환
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const item = {
-                    id: Date.now(), // 고유 식별자 고유 ID 생성
-                    imageSrc: e.target.result,
-                    date: dateValue,
-                    caption: caption || '부연 설명이 없습니다.'
+        // 프로필 사진 직접 선택 및 실시간 미리보기 로직
+        document.getElementById('profile-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('profile-view').src = event.target.result;
                 };
+                reader.readAsDataURL(file);
+            }
+        });
 
-                scheduleList.push(item);
-                
-                // 날짜 기준 오름차순(과거->미래) 정렬 (원한다면 내림차순도 가능)
-                scheduleList.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-                renderGallery();
-                resetForm();
+        // 연락처(VCF 파일) 자동 생성 및 다운로드 기능
+        document.getElementById('downloadVCF').addEventListener('click', function() {
+            const info = {
+                name: '도연서',
+                phone: '010-****-***1',
+                email: 'ysys_0@naver.com',
+                org: '경남정보대학교',
+                title: 'AI컴퓨터과/1학년',
+                address: '부산광역시 사상구 주례로 45'
             };
-            
-            reader.readAsDataURL(file);
-        }
 
-        // 입력 폼 초기화 함수
-        function resetForm() {
-            imageInput.value = '';
-            captionInput.value = '';
-            const today = new Date().toISOString().split('T')[0];
-            dateInput.value = today;
-        }
+            const vcard = [
+                'BEGIN:VCARD',
+                'VERSION:3.0',
+                `N:${info.name};;;`,
+                `FN:${info.name}`,
+                `ORG:${info.org}`,
+                `TITLE:${info.title}`,
+                `TEL;TYPE=CELL:${info.phone}`,
+                `EMAIL;TYPE=PREF,INTERNET:${info.email}`,
+                `ADR;TYPE=WORK:;;${info.address};;;;`,
+                'END:VCARD'
+            ].join('\r\n');
 
-        // 카드 클릭 시 삭제 실행 함수
-        function deleteSchedule(id) {
-            if (confirm('선택한 일정과 사진을 삭제하시겠습니까?')) {
-                scheduleList = scheduleList.filter(item => item.id !== id);
-                renderGallery();
-            }
-        }
+            const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8;' });
+            const filename = `${info.name}_명함.vcf`;
 
-        // 화면 갱신 렌더링 함수
-        function renderGallery() {
-            // 기존 카드들 청소
-            const existingCards = gallery.querySelectorAll('.card');
-            existingCards.forEach(card => card.remove());
-
-            if (scheduleList.length === 0) {
-                emptyMessage.style.display = 'block';
-                return;
+            if (navigator.msSaveBlob) { 
+                navigator.msSaveBlob(blob, filename);
             } else {
-                emptyMessage.style.display = 'none';
+                const link = document.createElement('a');
+                if (link.download !== undefined) {
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', filename);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
             }
-
-            // 정렬된 리스트 순서대로 화면에 배치
-            scheduleList.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.onclick = () => deleteSchedule(item.id);
-
-                card.innerHTML = `
-                    <div class="card-img-wrapper">
-                        <span class="card-date-badge">${item.date}</span>
-                        <img src="${item.imageSrc}" alt="일정 사진">
-                    </div>
-                    <div class="card-content">
-                        <p class="card-caption">${escapeHtml(item.caption)}</p>
-                    </div>
-                `;
-
-                gallery.appendChild(card);
-            });
-        }
-
-        // 보안 처리를 위한 텍스트 치환 함수 (XSS 방지)
-        function escapeHtml(text) {
-            return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
+        });
     </script>
 </body>
 </html>
